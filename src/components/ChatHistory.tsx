@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { MessageSquare } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -17,64 +16,103 @@ type ChatConversation = {
 };
 
 interface ChatHistoryMessage {
-  message?: string;
-  response?: string;
+  type: 'human' | 'ai';
+  content: string;
+  additional_kwargs: Record<string, unknown>;
+  response_metadata: Record<string, unknown>;
+  tool_calls?: unknown[];
+  invalid_tool_calls?: unknown[];
 }
+
+const generateTitle = (content: string): string => {
+  // Remove markdown formatting
+  const plainText = content.replace(/\*\*/g, '').replace(/\n/g, ' ');
+  
+  // Try to extract a meaningful title
+  let title = plainText;
+  
+  // If it's a question, use the first sentence
+  if (plainText.includes('?')) {
+    title = plainText.split('?')[0] + '?';
+  } else {
+    // Otherwise use the first sentence or first few words
+    const firstSentence = plainText.split(/[.!?]/)[0];
+    title = firstSentence;
+  }
+  
+  // Truncate if too long
+  return title.length > 40 ? title.substring(0, 40) + '...' : title;
+};
 
 const ChatHistory = ({ onSelectConversation, currentSessionId }: ChatHistoryProps) => {
   const [conversations, setConversations] = useState<ChatConversation[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  useEffect(() => {
-    const fetchConversations = async () => {
-      try {
-        setLoading(true);
+  const fetchConversations = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch conversations from the n8n_chat_histories table
+      const { data, error } = await supabase
+        .from('n8n_chat_histories')
+        .select('*')
+        .order('id', { ascending: false });
+      
+      if (error) throw error;
+      
+      // Create a Map to store unique conversations by session_id
+      const uniqueConversations = new Map<string, ChatConversation>();
+      
+      // Group messages by session_id to find the last human message
+      const messagesBySession = new Map<string, ChatHistoryMessage[]>();
+      
+      // First, group all messages by session_id
+      data?.forEach(item => {
+        const messageData = item.message as unknown as ChatHistoryMessage;
+        if (!messagesBySession.has(item.session_id)) {
+          messagesBySession.set(item.session_id, []);
+        }
+        messagesBySession.get(item.session_id)?.push(messageData);
+      });
+      
+      // Then process each session to find the last human message
+      messagesBySession.forEach((messages, sessionId) => {
+        // Find the last human message
+        const lastHumanMessage = [...messages].reverse().find(msg => 
+          msg && msg.type === 'human' && msg.content
+        );
         
-        // Fetch conversations from the n8n_chat_histories table
-        const { data, error } = await supabase
-          .from('n8n_chat_histories')
-          .select('*')
-          .order('id', { ascending: false });
+        let title = 'New conversation';
+        if (lastHumanMessage && lastHumanMessage.content) {
+          title = generateTitle(lastHumanMessage.content);
+        }
         
-        if (error) throw error;
-        
-        // Create a Map to store unique conversations by session_id
-        const uniqueConversations = new Map<string, ChatConversation>();
-        
-        // Process the data to get unique conversations
-        data?.forEach(item => {
-          if (!uniqueConversations.has(item.session_id)) {
-            // Check if message is an object and has message property
-            const messageObj = item.message as ChatHistoryMessage;
-            const messageContent = messageObj && typeof messageObj === 'object' && 'message' in messageObj && typeof messageObj.message === 'string'
-              ? messageObj.message.substring(0, 30) + '...'
-              : 'New conversation';
-            
-            uniqueConversations.set(item.session_id, {
-              session_id: item.session_id,
-              title: messageContent,
-              created_at: new Date().toISOString() // Fallback if no created_at in the item
-            });
-          }
+        uniqueConversations.set(sessionId, {
+          session_id: sessionId,
+          title: title,
+          created_at: data?.find(item => item.session_id === sessionId)?.created_at || new Date().toISOString()
         });
-        
-        // Convert Map to array
-        setConversations(Array.from(uniqueConversations.values()));
-      } catch (error: any) {
-        console.error('Error fetching conversations:', error);
-        toast({
-          title: "Error fetching conversations",
-          description: error.message,
-          variant: "destructive"
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
+      });
+      
+      // Convert Map to array
+      setConversations(Array.from(uniqueConversations.values()));
+    } catch (error: any) {
+      console.error('Error fetching conversations:', error);
+      toast({
+        title: "Error fetching conversations",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // Fetch conversations on mount and when currentSessionId changes
+  useEffect(() => {
     fetchConversations();
-  }, [toast]);
+  }, [currentSessionId, toast]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -82,7 +120,7 @@ const ChatHistory = ({ onSelectConversation, currentSessionId }: ChatHistoryProp
   };
 
   return (
-    <div className="flex-1 overflow-y-auto px-3">
+    <div className="flex-1 overflow-y-auto px-3 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/20">
       <h2 className="mb-2 px-2 text-lg font-semibold text-white">Conversations</h2>
       
       {loading ? (

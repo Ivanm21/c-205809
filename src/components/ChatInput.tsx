@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ArrowUp, Loader2 } from "lucide-react";
 
@@ -32,7 +31,7 @@ const ChatInput = ({ onSend, isLoading = false }: ChatInputProps) => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask Playtech anything..."
+          placeholder="Ask anything about Playtech"
           className="w-full resize-none rounded-full bg-[#1f1b33]/80 border border-white/20 px-4 py-4 pr-12 focus:outline-none focus:border-blue-500 text-white"
           style={{ maxHeight: "200px" }}
           disabled={isLoading}
