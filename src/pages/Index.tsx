@@ -31,17 +31,17 @@ const Index = () => {
       try {
         setIsLoading(true);
         const { data, error } = await supabase
-          .from('n8n_chat_histories')
+          .from('chat_messages')
           .select('*')
-          .eq('session_id', sessionId)
+          .eq('user_id', sessionId)
           .order('created_at', { ascending: true });
           
         if (error) throw error;
         
         if (data && data.length > 0) {
           const conversationMessages = data.map(item => ({
-            role: item.is_bot ? 'assistant' : 'user',
-            content: item.message
+            role: item.role as 'user' | 'assistant',
+            content: item.content
           })) as Message[];
           
           setMessages(conversationMessages);

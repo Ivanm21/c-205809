@@ -25,23 +25,26 @@ const ChatHistory = ({ onSelectConversation, currentSessionId }: ChatHistoryProp
       try {
         setLoading(true);
         
-        // Fetch conversations from the n8n_chat_histories table, grouped by session_id
+        // Fetch conversations from the chat_messages table, grouped by user_id
         const { data, error } = await supabase
-          .from('n8n_chat_histories')
-          .select('session_id, title, created_at')
+          .from('chat_messages')
+          .select('id, content, created_at, user_id')
           .order('created_at', { ascending: false });
         
         if (error) throw error;
         
-        // Create a Map to store unique conversations by session_id
+        // Create a Map to store unique conversations by user_id (using it as session_id)
         const uniqueConversations = new Map<string, ChatConversation>();
         
         // Process the data to get unique conversations
         data?.forEach(item => {
-          if (!uniqueConversations.has(item.session_id)) {
-            uniqueConversations.set(item.session_id, {
-              session_id: item.session_id,
-              title: item.title || 'New conversation',
+          if (!uniqueConversations.has(item.user_id)) {
+            // Use the first few words of the first message as the title
+            const title = item.content.split(' ').slice(0, 4).join(' ') + '...';
+            
+            uniqueConversations.set(item.user_id, {
+              session_id: item.user_id,
+              title: title || 'New conversation',
               created_at: item.created_at
             });
           }
