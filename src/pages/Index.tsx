@@ -9,11 +9,18 @@ import MessageList from '@/components/MessageList';
 import ChatHistory from '@/components/ChatHistory';
 import { sendChatMessage } from '@/services/chatService';
 import { supabase } from '@/integrations/supabase/client';
+import { Json } from '@/integrations/supabase/types';
 
 type Message = {
   role: 'user' | 'assistant';
   content: string;
 };
+
+// Interface to help with typing the message JSON structure
+interface ChatHistoryMessage {
+  message?: string;
+  response?: string;
+}
 
 const Index = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -43,20 +50,23 @@ const Index = () => {
           const conversationMessages: Message[] = [];
           
           data.forEach(item => {
-            if (item.message && typeof item.message === 'object') {
-              // Add user message
-              if (item.message.message) {
+            // Type checking for message to ensure it's an object with the expected properties
+            const messageObj = item.message as ChatHistoryMessage;
+            
+            if (messageObj && typeof messageObj === 'object') {
+              // Add user message if it exists
+              if ('message' in messageObj && typeof messageObj.message === 'string') {
                 conversationMessages.push({
                   role: 'user',
-                  content: item.message.message
+                  content: messageObj.message
                 });
               }
               
-              // Add assistant response if available
-              if (item.message.response) {
+              // Add assistant response if it exists
+              if ('response' in messageObj && typeof messageObj.response === 'string') {
                 conversationMessages.push({
                   role: 'assistant',
-                  content: item.message.response
+                  content: messageObj.response
                 });
               }
             }

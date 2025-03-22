@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { MessageSquare } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Json } from '@/integrations/supabase/types';
 
 interface ChatHistoryProps {
   onSelectConversation: (sessionId: string, title: string) => void;
@@ -39,9 +40,10 @@ const ChatHistory = ({ onSelectConversation, currentSessionId }: ChatHistoryProp
         // Process the data to get unique conversations
         data?.forEach(item => {
           if (!uniqueConversations.has(item.session_id)) {
-            // Use the first message content as the title
-            const messageContent = typeof item.message === 'object' && item.message.message 
-              ? item.message.message.substring(0, 30) + '...'
+            // Check if message is an object and has message property
+            const messageObj = item.message as { message?: string };
+            const messageContent = messageObj && typeof messageObj === 'object' && 'message' in messageObj && typeof messageObj.message === 'string'
+              ? messageObj.message.substring(0, 30) + '...'
               : 'New conversation';
             
             uniqueConversations.set(item.session_id, {
