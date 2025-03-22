@@ -9,393 +9,42 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      ascii_conversions: {
-        Row: {
-          created_at: string
-          id: number
-          total_count: number
-          type: string
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          total_count?: number
-          type: string
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          total_count?: number
-          type?: string
-        }
-        Relationships: []
-      }
-      badge_images: {
-        Row: {
-          created_at: string
-          id: string
-          image_url: string | null
-          prompt: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          image_url?: string | null
-          prompt: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          image_url?: string | null
-          prompt?: string
-        }
-        Relationships: []
-      }
-      blog_posts: {
+      documents: {
         Row: {
           content: string | null
-          created_at: string
-          excerpt: string | null
+          embedding: string | null
           id: number
-          image_url: string | null
-          read_time: number | null
-          title: string | null
-          updated_at: string | null
-          views: number | null
+          metadata: Json | null
         }
         Insert: {
           content?: string | null
-          created_at?: string
-          excerpt?: string | null
+          embedding?: string | null
           id?: number
-          image_url?: string | null
-          read_time?: number | null
-          title?: string | null
-          updated_at?: string | null
-          views?: number | null
+          metadata?: Json | null
         }
         Update: {
           content?: string | null
-          created_at?: string
-          excerpt?: string | null
+          embedding?: string | null
           id?: number
-          image_url?: string | null
-          read_time?: number | null
-          title?: string | null
-          updated_at?: string | null
-          views?: number | null
+          metadata?: Json | null
         }
         Relationships: []
       }
-      channel_invitations: {
+      n8n_chat_histories: {
         Row: {
-          accepted_at: string | null
-          channel_id: string | null
-          created_at: string
-          created_by: string | null
-          email: string
-          id: string
-          role: string
-        }
-        Insert: {
-          accepted_at?: string | null
-          channel_id?: string | null
-          created_at?: string
-          created_by?: string | null
-          email: string
-          id?: string
-          role?: string
-        }
-        Update: {
-          accepted_at?: string | null
-          channel_id?: string | null
-          created_at?: string
-          created_by?: string | null
-          email?: string
-          id?: string
-          role?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "channel_invitations_channel_id_fkey"
-            columns: ["channel_id"]
-            isOneToOne: false
-            referencedRelation: "channels"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      channel_members: {
-        Row: {
-          channel_id: string | null
-          created_at: string
-          id: string
-          role: string
-          user_id: string | null
-        }
-        Insert: {
-          channel_id?: string | null
-          created_at?: string
-          id?: string
-          role?: string
-          user_id?: string | null
-        }
-        Update: {
-          channel_id?: string | null
-          created_at?: string
-          id?: string
-          role?: string
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "channel_members_channel_id_fkey"
-            columns: ["channel_id"]
-            isOneToOne: false
-            referencedRelation: "channels"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      channels: {
-        Row: {
-          created_at: string
-          id: string
-          name: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          name: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          name?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      chat_messages: {
-        Row: {
-          content: string
-          created_at: string
-          id: string
-          role: string
-          user_id: string
-        }
-        Insert: {
-          content: string
-          created_at?: string
-          id?: string
-          role: string
-          user_id: string
-        }
-        Update: {
-          content?: string
-          created_at?: string
-          id?: string
-          role?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      html_edits: {
-        Row: {
-          created_at: string
-          html_content: string
-          id: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          html_content: string
-          id?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          html_content?: string
-          id?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      image_generations: {
-        Row: {
-          created_at: string
-          description: string | null
-          generated_image_url: string | null
           id: number
-          screenshot_url: string | null
-          url: string
+          message: Json
+          session_id: string
         }
         Insert: {
-          created_at?: string
-          description?: string | null
-          generated_image_url?: string | null
           id?: number
-          screenshot_url?: string | null
-          url: string
+          message: Json
+          session_id: string
         }
         Update: {
-          created_at?: string
-          description?: string | null
-          generated_image_url?: string | null
           id?: number
-          screenshot_url?: string | null
-          url?: string
-        }
-        Relationships: []
-      }
-      issues: {
-        Row: {
-          assignee_id: string | null
-          channel_id: string | null
-          created_at: string
-          created_by: string | null
-          description: string | null
-          due_date: string | null
-          id: string
-          priority: string
-          status: string
-          team_id: string | null
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          assignee_id?: string | null
-          channel_id?: string | null
-          created_at?: string
-          created_by?: string | null
-          description?: string | null
-          due_date?: string | null
-          id?: string
-          priority?: string
-          status?: string
-          team_id?: string | null
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          assignee_id?: string | null
-          channel_id?: string | null
-          created_at?: string
-          created_by?: string | null
-          description?: string | null
-          due_date?: string | null
-          id?: string
-          priority?: string
-          status?: string
-          team_id?: string | null
-          title?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "issues_channel_id_fkey"
-            columns: ["channel_id"]
-            isOneToOne: false
-            referencedRelation: "channels"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      lovable: {
-        Row: {
-          created_at: string
-          id: number
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-        }
-        Update: {
-          created_at?: string
-          id?: number
-        }
-        Relationships: []
-      }
-      published_projects: {
-        Row: {
-          created_at: string
-          html_content: string
-          id: string
-          project_name: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          html_content: string
-          id?: string
-          project_name: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          html_content?: string
-          id?: string
-          project_name?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      twitter_predictions: {
-        Row: {
-          created_at: string
-          id: number
-          predictions: Json
-          profile: Json
-          twitter_handle: string
-        }
-        Insert: {
-          created_at?: string
-          id?: never
-          predictions: Json
-          profile: Json
-          twitter_handle: string
-        }
-        Update: {
-          created_at?: string
-          id?: never
-          predictions?: Json
-          profile?: Json
-          twitter_handle?: string
-        }
-        Relationships: []
-      }
-      user_profiles: {
-        Row: {
-          channels: string[] | null
-          created_at: string | null
-          generated_posts: Json | null
-          id: string
-          message: string | null
-          subreddits: Json | null
-          subreddits_with_posts: Json | null
-          updated_at: string | null
-        }
-        Insert: {
-          channels?: string[] | null
-          created_at?: string | null
-          generated_posts?: Json | null
-          id: string
-          message?: string | null
-          subreddits?: Json | null
-          subreddits_with_posts?: Json | null
-          updated_at?: string | null
-        }
-        Update: {
-          channels?: string[] | null
-          created_at?: string | null
-          generated_posts?: Json | null
-          id?: string
-          message?: string | null
-          subreddits?: Json | null
-          subreddits_with_posts?: Json | null
-          updated_at?: string | null
+          message?: Json
+          session_id?: string
         }
         Relationships: []
       }
@@ -404,25 +53,190 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      create_team_with_admin: {
+      binary_quantize:
+        | {
+            Args: {
+              "": string
+            }
+            Returns: unknown
+          }
+        | {
+            Args: {
+              "": unknown
+            }
+            Returns: unknown
+          }
+      halfvec_avg: {
         Args: {
-          team_name: string
-          team_description: string
-          user_id: string
+          "": number[]
         }
-        Returns: undefined
+        Returns: unknown
       }
-      increment_conversion_count: {
+      halfvec_out: {
         Args: {
-          conversion_type: string
+          "": unknown
         }
-        Returns: undefined
+        Returns: unknown
       }
-      increment_view_count: {
+      halfvec_send: {
         Args: {
-          post_id: number
+          "": unknown
         }
-        Returns: undefined
+        Returns: string
+      }
+      halfvec_typmod_in: {
+        Args: {
+          "": unknown[]
+        }
+        Returns: number
+      }
+      hnsw_bit_support: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      hnsw_halfvec_support: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      hnsw_sparsevec_support: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      hnswhandler: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      ivfflat_bit_support: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      ivfflat_halfvec_support: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      ivfflathandler: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      l2_norm:
+        | {
+            Args: {
+              "": unknown
+            }
+            Returns: number
+          }
+        | {
+            Args: {
+              "": unknown
+            }
+            Returns: number
+          }
+      l2_normalize:
+        | {
+            Args: {
+              "": string
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              "": unknown
+            }
+            Returns: unknown
+          }
+        | {
+            Args: {
+              "": unknown
+            }
+            Returns: unknown
+          }
+      match_documents: {
+        Args: {
+          query_embedding: string
+          match_count?: number
+          filter?: Json
+        }
+        Returns: {
+          id: number
+          content: string
+          metadata: Json
+          similarity: number
+        }[]
+      }
+      sparsevec_out: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      sparsevec_send: {
+        Args: {
+          "": unknown
+        }
+        Returns: string
+      }
+      sparsevec_typmod_in: {
+        Args: {
+          "": unknown[]
+        }
+        Returns: number
+      }
+      vector_avg: {
+        Args: {
+          "": number[]
+        }
+        Returns: string
+      }
+      vector_dims:
+        | {
+            Args: {
+              "": string
+            }
+            Returns: number
+          }
+        | {
+            Args: {
+              "": unknown
+            }
+            Returns: number
+          }
+      vector_norm: {
+        Args: {
+          "": string
+        }
+        Returns: number
+      }
+      vector_out: {
+        Args: {
+          "": string
+        }
+        Returns: unknown
+      }
+      vector_send: {
+        Args: {
+          "": string
+        }
+        Returns: string
+      }
+      vector_typmod_in: {
+        Args: {
+          "": unknown[]
+        }
+        Returns: number
       }
     }
     Enums: {
