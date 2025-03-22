@@ -33,7 +33,7 @@ const ChatInput = ({ onSend, isLoading = false }: ChatInputProps) => {
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask Playtech anything..."
-          className="w-full resize-none rounded-full bg-[#2F2F2F] px-4 py-4 pr-12 focus:outline-none"
+          className="w-full resize-none rounded-full bg-[#1f1b33]/80 border border-white/20 px-4 py-4 pr-12 focus:outline-none focus:border-blue-500 text-white"
           style={{ maxHeight: "200px" }}
           disabled={isLoading}
         />

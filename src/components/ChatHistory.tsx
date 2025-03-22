@@ -25,27 +25,29 @@ const ChatHistory = ({ onSelectConversation, currentSessionId }: ChatHistoryProp
       try {
         setLoading(true);
         
-        // Fetch conversations from the chat_messages table, grouped by user_id
+        // Fetch conversations from the n8n_chat_histories table
         const { data, error } = await supabase
-          .from('chat_messages')
-          .select('id, content, created_at, user_id')
-          .order('created_at', { ascending: false });
+          .from('n8n_chat_histories')
+          .select('*')
+          .order('id', { ascending: false });
         
         if (error) throw error;
         
-        // Create a Map to store unique conversations by user_id (using it as session_id)
+        // Create a Map to store unique conversations by session_id
         const uniqueConversations = new Map<string, ChatConversation>();
         
         // Process the data to get unique conversations
         data?.forEach(item => {
-          if (!uniqueConversations.has(item.user_id)) {
-            // Use the first few words of the first message as the title
-            const title = item.content.split(' ').slice(0, 4).join(' ') + '...';
+          if (!uniqueConversations.has(item.session_id)) {
+            // Use the first message content as the title
+            const messageContent = typeof item.message === 'object' && item.message.message 
+              ? item.message.message.substring(0, 30) + '...'
+              : 'New conversation';
             
-            uniqueConversations.set(item.user_id, {
-              session_id: item.user_id,
-              title: title || 'New conversation',
-              created_at: item.created_at
+            uniqueConversations.set(item.session_id, {
+              session_id: item.session_id,
+              title: messageContent,
+              created_at: new Date().toISOString() // Fallback if no created_at in the item
             });
           }
         });
