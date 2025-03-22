@@ -16,6 +16,11 @@ type ChatConversation = {
   created_at: string;
 };
 
+interface ChatHistoryMessage {
+  message?: string;
+  response?: string;
+}
+
 const ChatHistory = ({ onSelectConversation, currentSessionId }: ChatHistoryProps) => {
   const [conversations, setConversations] = useState<ChatConversation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,7 +46,7 @@ const ChatHistory = ({ onSelectConversation, currentSessionId }: ChatHistoryProp
         data?.forEach(item => {
           if (!uniqueConversations.has(item.session_id)) {
             // Check if message is an object and has message property
-            const messageObj = item.message as { message?: string };
+            const messageObj = item.message as ChatHistoryMessage;
             const messageContent = messageObj && typeof messageObj === 'object' && 'message' in messageObj && typeof messageObj.message === 'string'
               ? messageObj.message.substring(0, 30) + '...'
               : 'New conversation';

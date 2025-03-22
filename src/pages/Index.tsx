@@ -157,13 +157,12 @@ const Index = () => {
           alt="Background" 
           className="h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-[#1f1b33]/70 backdrop-blur-[2px]"></div>
+        <div className="absolute inset-0 bg-[#1f1b33]/70 backdrop-blur-[1px]"></div>
       </div>
       
       <Sidebar 
         isOpen={isSidebarOpen} 
         onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
-        onApiKeyChange={() => {}}
       >
         {isSidebarOpen && (
           <ChatHistory 
@@ -176,32 +175,34 @@ const Index = () => {
       <main className={`flex-1 transition-all duration-300 relative z-10 ${isSidebarOpen ? 'ml-64' : 'ml-0'}`}>
         <ChatHeader isSidebarOpen={isSidebarOpen} />
         
-        <div className={`flex h-full flex-col ${messages.length === 0 ? 'items-center' : ''} pt-[60px] pb-4`}>
-          {messages.length === 0 ? (
-            <div className="w-full max-w-3xl px-4 flex flex-col h-full">
-              <div className="flex-1 flex flex-col justify-center items-center">
+        <div className="flex h-full flex-col pt-[60px] pb-4">
+          <div className="flex-1 overflow-y-auto">
+            {messages.length > 0 ? (
+              <MessageList messages={messages} />
+            ) : (
+              <div className="flex-1 flex flex-col items-center">
+                {/* Empty state or no messages state */}
+              </div>
+            )}
+          </div>
+          
+          <div className="w-full max-w-3xl mx-auto px-4 mt-auto">
+            {messages.length === 0 && (
+              <div className="mb-8">
                 <h1 className="mb-8 text-4xl font-semibold text-center text-white">How can I help you with Playtech?</h1>
-                <div className="w-full">
-                  <ActionButtons onPromptClick={handlePromptClick} />
-                </div>
+                <ActionButtons onPromptClick={handlePromptClick} />
               </div>
-              <div className="w-full mt-auto py-6">
-                <ChatInput onSend={handleSendMessage} isLoading={isLoading} />
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className="flex-1 overflow-y-auto">
-                <MessageList messages={messages} />
-              </div>
-              <div className="w-full max-w-3xl mx-auto px-4 py-6 mt-auto">
-                <ChatInput onSend={handleSendMessage} isLoading={isLoading} />
+            )}
+            
+            <div className="py-6">
+              <ChatInput onSend={handleSendMessage} isLoading={isLoading} />
+              {sessionId && (
                 <div className="text-xs text-center text-gray-300 mt-2">
                   {currentConversationTitle ? `Current conversation: ${currentConversationTitle}` : 'New conversation'}
                 </div>
-              </div>
-            </>
-          )}
+              )}
+            </div>
+          </div>
         </div>
       </main>
     </div>
