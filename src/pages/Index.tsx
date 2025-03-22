@@ -30,13 +30,14 @@ const Index = () => {
   const [currentConversationTitle, setCurrentConversationTitle] = useState<string | null>(null);
   const { toast } = useToast();
 
+  // Fetch conversation messages whenever sessionId changes
   useEffect(() => {
-    // If a session is selected, fetch its messages
+    if (!sessionId) return;
+    
     const fetchConversationMessages = async () => {
-      if (!sessionId) return;
-      
       try {
         setIsLoading(true);
+        
         const { data, error } = await supabase
           .from('n8n_chat_histories')
           .select('*')
@@ -180,21 +181,22 @@ const Index = () => {
             {messages.length > 0 ? (
               <MessageList messages={messages} />
             ) : (
-              <div className="flex-1 flex flex-col items-center">
-                {/* Empty state or no messages state */}
+              <div className="flex-1 flex flex-col items-center justify-center">
+                <h1 className="mb-8 text-4xl font-semibold text-center text-white">How can I help you with Playtech?</h1>
+                <ActionButtons onPromptClick={handlePromptClick} />
               </div>
             )}
           </div>
           
           <div className="w-full max-w-3xl mx-auto px-4 mt-auto">
-            {messages.length === 0 && (
-              <div className="mb-8">
-                <h1 className="mb-8 text-4xl font-semibold text-center text-white">How can I help you with Playtech?</h1>
+            {messages.length > 0 && (
+              <div className="mb-6">
+                <h1 className="mb-4 text-xl font-semibold text-center text-white">How else can I help you with Playtech?</h1>
                 <ActionButtons onPromptClick={handlePromptClick} />
               </div>
             )}
             
-            <div className="py-6">
+            <div className="py-4">
               <ChatInput onSend={handleSendMessage} isLoading={isLoading} />
               {sessionId && (
                 <div className="text-xs text-center text-gray-300 mt-2">
