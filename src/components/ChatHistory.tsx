@@ -165,9 +165,8 @@ const ChatHistory = ({ onSelectConversation, currentSessionId }: ChatHistoryProp
                     <div className="absolute bottom-0 left-4 -mb-1.5 w-2 h-2 bg-[#2A2B32] border-r border-b border-white/10 transform rotate-45"></div>
                   </div>
                 </div>
-                <div className="text-xs text-gray-400">{formatDate(conversation.created_at)}</div>
                 {conversation.last_response && (
-                  <div className="text-xs text-gray-500 truncate mt-1">{conversation.last_response}</div>
+                  <div className="text-xs text-gray-500 line-clamp-2 mt-1">{conversation.last_response}</div>
                 )}
               </div>
             </button>
