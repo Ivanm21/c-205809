@@ -1,4 +1,3 @@
-
 import { HelpCircle } from "lucide-react";
 
 interface ActionButtonsProps {
@@ -7,11 +6,11 @@ interface ActionButtonsProps {
 
 const ActionButtons = ({ onPromptClick }: ActionButtonsProps) => {
   const prompts = [
-    "What is Playtech?",
-    "What products does Playtech offer?",
-    "How does Playtech support its partners?",
-    "Tell me about Playtech's services",
-    "What industries does Playtech serve?"
+    "What is Playtech's history?",
+    "Tell me about Playtech's gaming solutions",
+    "What are Playtech's latest innovations?",
+    "How does Playtech ensure responsible gaming?",
+    "What markets does Playtech operate in?"
   ];
 
   return (

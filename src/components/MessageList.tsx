@@ -27,7 +27,11 @@ const MessageList = ({ messages, isLoading = false }: MessageListProps) => {
     <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/20">
       <div className="w-full max-w-3xl mx-auto px-4">
         {messages.map((message, index) => (
-          <Message key={index} {...message} />
+          <Message 
+            key={index} 
+            {...message} 
+            isLastMessage={index === messages.length - 1 && !isLoading}
+          />
         ))}
         {isLoading && <LoadingAnimation />}
         <div ref={messagesEndRef} /> {/* Invisible element to scroll to */}

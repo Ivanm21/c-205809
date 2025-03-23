@@ -13,6 +13,7 @@ type ChatConversation = {
   session_id: string;
   title: string;
   created_at: string;
+  last_response?: string;
 };
 
 interface ChatHistoryMessage {
@@ -40,8 +41,7 @@ const generateTitle = (content: string): string => {
     title = firstSentence;
   }
   
-  // Truncate if too long
-  return title.length > 40 ? title.substring(0, 40) + '...' : title;
+  return title;
 };
 
 const ChatHistory = ({ onSelectConversation, currentSessionId }: ChatHistoryProps) => {
@@ -76,11 +76,16 @@ const ChatHistory = ({ onSelectConversation, currentSessionId }: ChatHistoryProp
         messagesBySession.get(item.session_id)?.push(messageData);
       });
       
-      // Then process each session to find the last human message
+      // Then process each session to find the last human message and last assistant response
       messagesBySession.forEach((messages, sessionId) => {
         // Find the last human message
         const lastHumanMessage = [...messages].reverse().find(msg => 
           msg && msg.type === 'human' && msg.content
+        );
+        
+        // Find the last assistant response
+        const lastAssistantMessage = [...messages].reverse().find(msg => 
+          msg && msg.type === 'ai' && msg.content
         );
         
         let title = 'New conversation';
@@ -91,7 +96,8 @@ const ChatHistory = ({ onSelectConversation, currentSessionId }: ChatHistoryProp
         uniqueConversations.set(sessionId, {
           session_id: sessionId,
           title: title,
-          created_at: data?.find(item => item.session_id === sessionId)?.created_at || new Date().toISOString()
+          created_at: data?.find(item => item.session_id === sessionId)?.created_at || new Date().toISOString(),
+          last_response: lastAssistantMessage?.content || undefined
         });
       });
       
@@ -116,7 +122,11 @@ const ChatHistory = ({ onSelectConversation, currentSessionId }: ChatHistoryProp
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString();
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
   return (
@@ -144,9 +154,21 @@ const ChatHistory = ({ onSelectConversation, currentSessionId }: ChatHistoryProp
               }`}
             >
               <MessageSquare className="h-4 w-4 flex-shrink-0" />
-              <div className="flex-1 truncate">
-                <div className="truncate font-medium">{conversation.title}</div>
+              <div className="flex-1 min-w-0">
+                <div 
+                  className="font-medium truncate group relative"
+                  title={conversation.title}
+                >
+                  {conversation.title}
+                  <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block w-max max-w-[28rem] p-2 bg-[#2A2B32] text-white text-sm rounded-lg shadow-lg border border-white/10 z-50">
+                    {conversation.title}
+                    <div className="absolute bottom-0 left-4 -mb-1.5 w-2 h-2 bg-[#2A2B32] border-r border-b border-white/10 transform rotate-45"></div>
+                  </div>
+                </div>
                 <div className="text-xs text-gray-400">{formatDate(conversation.created_at)}</div>
+                {conversation.last_response && (
+                  <div className="text-xs text-gray-500 truncate mt-1">{conversation.last_response}</div>
+                )}
               </div>
             </button>
           ))}

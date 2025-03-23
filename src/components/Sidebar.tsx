@@ -40,7 +40,7 @@ const Sidebar = ({ isOpen, onToggle, onNewChat, children }: SidebarProps) => {
       
       {/* Sidebar content */}
       <div className={cn(
-        "fixed top-0 left-0 z-40 h-screen w-64 bg-[#1f1b33] transition-transform duration-300",
+        "fixed top-0 left-0 z-40 h-screen w-[31rem] bg-[#1f1b33] transition-transform duration-300",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <nav className="flex h-full w-full flex-col px-3" aria-label="Chat history">
@@ -50,15 +50,15 @@ const Sidebar = ({ isOpen, onToggle, onNewChat, children }: SidebarProps) => {
           {children}
 
           {isOpen && (
-            <div className="flex flex-col py-2 border-t border-white/20 mt-auto">
-              <button className="group flex gap-2 p-2.5 text-sm items-start hover:bg-token-sidebar-surface-secondary rounded-lg px-2 text-left w-full min-w-[200px]">
+            <div className="flex flex-col py-0.5 border-t border-white/20 mt-auto">
+              <button className="group flex gap-1 p-1.5 text-sm items-center hover:bg-token-sidebar-surface-secondary rounded-lg px-2 text-left w-full min-w-[200px]">
                 <span className="flex w-full flex-row flex-wrap-reverse justify-between">
-                  <div className="flex items-center gap-4">
-                    <span className="text-lg">Powered by</span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-sm">Powered by</span>
                     <img 
                       src="https://www.playtech.com/app/uploads/2023/08/logo-asset.svg" 
                       alt="Playtech logo" 
-                      className="h-20 w-20 object-contain"
+                      className="h-24 w-24 object-contain"
                     />
                   </div>
                 </span>
