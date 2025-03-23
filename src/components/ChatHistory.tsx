@@ -14,6 +14,7 @@ type ChatConversation = {
   title: string;
   created_at: string;
   last_response?: string;
+  visible: boolean;
 };
 
 interface ChatHistoryMessage {
@@ -57,6 +58,7 @@ const ChatHistory = ({ onSelectConversation, currentSessionId }: ChatHistoryProp
       const { data, error } = await supabase
         .from('n8n_chat_histories')
         .select('*')
+        .eq('visible', true)
         .order('id', { ascending: false });
       
       if (error) throw error;
@@ -93,12 +95,16 @@ const ChatHistory = ({ onSelectConversation, currentSessionId }: ChatHistoryProp
           title = generateTitle(lastHumanMessage.content);
         }
         
-        uniqueConversations.set(sessionId, {
-          session_id: sessionId,
-          title: title,
-          created_at: data?.find(item => item.session_id === sessionId)?.created_at || new Date().toISOString(),
-          last_response: lastAssistantMessage?.content || undefined
-        });
+        // Only add conversation if it has at least one visible message
+        if (messages.length > 0) {
+          uniqueConversations.set(sessionId, {
+            session_id: sessionId,
+            title: title,
+            created_at: data?.find(item => item.session_id === sessionId)?.created_at || new Date().toISOString(),
+            last_response: lastAssistantMessage?.content || undefined,
+            visible: true
+          });
+        }
       });
       
       // Convert Map to array

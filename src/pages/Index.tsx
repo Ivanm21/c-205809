@@ -154,6 +154,7 @@ const Index = () => {
         .from('n8n_chat_histories')
         .select('*')
         .eq('session_id', newSessionId)
+        .eq('visible', true)
         .order('id', { ascending: true });
         
       if (error) throw error;

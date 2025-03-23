@@ -36,18 +36,21 @@ export type Database = {
           message: Json
           session_id: string
           created_at: string
+          visible: boolean
         }
         Insert: {
           id?: number
           message: Json
           session_id: string
           created_at?: string
+          visible?: boolean
         }
         Update: {
           id?: number
           message?: Json
           session_id?: string
           created_at?: string
+          visible?: boolean
         }
         Relationships: []
       }
