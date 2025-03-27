@@ -31,6 +31,14 @@ const Message = ({ role, content, isLastMessage = false }: MessageProps) => {
                   code: ({node, ...props}) => <code className="bg-black/20 rounded px-1" {...props} />,
                   pre: ({node, ...props}) => <pre className="bg-black/20 rounded p-2 my-2 overflow-x-auto" {...props} />,
                   blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-white/20 pl-4 my-2" {...props} />,
+                  a: ({node, ...props}) => (
+                    <a 
+                      {...props} 
+                      className="text-blue-400 hover:text-blue-300 underline" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    />
+                  ),
                 }}
               >
                 {content}
