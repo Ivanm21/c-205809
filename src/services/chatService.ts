@@ -19,7 +19,7 @@ function generateUUID() {
 }
 
 export const sendChatMessage = async ({ message, sessionId }: SendMessageParams): Promise<ChatResponse> => {
-  const webhookUrl = 'https://crypto-narrative.app.n8n.cloud/webhook/a3e11a26-c9fa-4088-bcfe-7d3d265c9849';
+  const webhookUrl = 'https://crypto-narrative.app.n8n.cloud/webhook/playtech-agent';
   
   // Generate a new sessionId if one is not provided
   const currentSessionId = sessionId || (typeof crypto !== 'undefined' && 'randomUUID' in crypto 
